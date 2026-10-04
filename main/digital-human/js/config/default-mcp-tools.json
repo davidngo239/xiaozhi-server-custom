@@ -1,0 +1,90 @@
+[
+    {
+        "name": "self_camera_take_photo",
+        "description": "Chụp ảnh bằng camera của thiết bị và trả về dữ liệu ảnh. BẮT BUỘC gọi công cụ này khi người dùng yêu cầu chụp ảnh, hỏi bạn nhìn thấy gì hoặc yêu cầu mô tả hình ảnh. Sau khi nhận ảnh, hãy mô tả nội dung. Tham số question không bắt buộc; mặc định yêu cầu mô tả các vật thể.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "question": {
+                    "type": "string",
+                    "description": "Câu hỏi định hướng phân tích ảnh, ví dụ: mô tả các vật thể. Có thể để trống."
+                }
+            }
+        },
+        "mockResponse": {
+            "success": true,
+            "photo_data": "base64_image_data",
+            "response": "Hãy mô tả những gì bạn thấy trong ảnh photo_data được trả về"
+        }
+    },
+    {
+        "name": "self.get_device_status",
+        "description": "Cung cấp thông tin thiết bị theo thời gian thực, gồm trạng thái loa, màn hình, pin và mạng. Dùng khi trả lời câu hỏi về trạng thái hiện tại hoặc trước tiên khi cần điều khiển thiết bị.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {}
+        },
+        "mockResponse": {
+            "audio_speaker": {
+                "volume": 50,
+                "muted": false
+            },
+            "screen": {
+                "brightness": 80,
+                "theme": "light"
+            },
+            "battery": {
+                "level": 85,
+                "charging": false
+            },
+            "network": {
+                "connected": true,
+                "type": "wifi"
+            }
+        }
+    },
+    {
+        "name": "self.audio_speaker.set_volume",
+        "description": "Đặt âm lượng loa. Nếu chưa biết âm lượng hiện tại, trước tiên gọi self.get_device_status.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "volume": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            },
+            "required": [
+                "volume"
+            ]
+        },
+        "mockResponse": {
+            "success": true,
+            "volume": "${volume}",
+            "message": "Đã đặt âm lượng thành ${volume}"
+        }
+    },
+    {
+        "name": "self.screen.set_brightness",
+        "description": "Đặt độ sáng màn hình.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "brightness": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            },
+            "required": [
+                "brightness"
+            ]
+        },
+        "mockResponse": {
+            "success": true,
+            "brightness": "${brightness}",
+            "message": "Đã đặt độ sáng thành ${brightness}"
+        }
+    }
+]

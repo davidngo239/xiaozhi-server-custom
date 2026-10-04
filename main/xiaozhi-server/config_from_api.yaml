@@ -1,0 +1,27 @@
+# Nếu bạn chỉ muốn cài đặt gọn xiaozhi-server và dùng tệp cấu hình cục bộ, hãy bỏ qua tệp này, không cần chỉnh sửa.
+# Nếu muốn lấy cấu hình từ manager-api, hãy làm theo hướng dẫn bên dưới:
+# Sao chép tệp này vào thư mục xiaozhi-server/data. Nếu chưa có thư mục data, hãy tạo thư mục rồi đổi tên bản sao thành .config.yaml.
+# Nếu trong thư mục data đã có .config.yaml, hãy xóa tệp đó trước.
+# Khởi động manager-api và manager-web, sau đó đăng ký tài khoản. Tài khoản đăng ký đầu tiên sẽ là quản trị viên.
+# Đăng nhập bằng tài khoản quản trị viên, mở trang Quản lý tham số, tìm server.secret và sao chép giá trị. Lưu ý: server.secret thay đổi mỗi khi triển khai mới.
+# Mở .config.yaml trong thư mục data và đặt manager-api.secret bằng giá trị server.secret vừa sao chép.
+server:
+  ip: 0.0.0.0
+  port: 8000
+  # Cổng dịch vụ HTTP dùng cho API phân tích hình ảnh.
+  http_port: 8003
+  # Địa chỉ API phân tích hình ảnh.
+  # Địa chỉ API phân tích hình ảnh sẽ gửi đến thiết bị.
+  # Với cấu hình mặc định bên dưới, hệ thống tự tạo địa chỉ nhận diện hình ảnh và ghi vào nhật ký khởi động. Bạn có thể mở địa chỉ đó trong trình duyệt để kiểm tra.
+  # Địa chỉ tự tạo có thể không chính xác khi triển khai bằng Docker hoặc qua Internet với SSL/tên miền.
+  # Khi dùng Docker, hãy đặt vision_explain thành địa chỉ mạng nội bộ.
+  # Khi triển khai công khai, hãy đặt vision_explain thành địa chỉ có thể truy cập từ Internet.
+  vision_explain: http://YOUR_IP_OR_DOMAIN:PORT/mcp/vision/explain
+manager-api:
+  # Địa chỉ manager-api của bạn; nên dùng địa chỉ IP mạng nội bộ.
+  # Nếu triển khai bằng Docker, hãy dùng http://xiaozhi-esp32-server-web:8002/xiaozhi.
+  url: http://127.0.0.1:8002/xiaozhi
+  # Mã thông báo manager-api, chính là giá trị server.secret bạn vừa sao chép.
+  secret: YOUR_SECRET
+# Tệp mẫu lời nhắc hệ thống mặc định.
+prompt_template: agent-base-prompt.txt

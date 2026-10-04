@@ -1,0 +1,41 @@
+package xiaozhi.modules.security.service;
+
+import xiaozhi.common.page.TokenDTO;
+import xiaozhi.common.service.BaseService;
+import xiaozhi.common.utils.Result;
+import xiaozhi.modules.security.entity.SysUserTokenEntity;
+import xiaozhi.modules.sys.dto.PasswordDTO;
+import xiaozhi.modules.sys.dto.SysUserDTO;
+
+/**
+ * Mã thông báo người dùng
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
+ * Website: https://www.renren.io
+ */
+public interface SysUserTokenService extends BaseService<SysUserTokenEntity> {
+
+    /**
+     * Tạo mã thông báo
+     *
+     * @param userId ID người dùng
+     */
+    Result<TokenDTO> createToken(Long userId);
+
+    SysUserDTO getUserByToken(String token);
+
+    /**
+     * Thoát
+     *
+     * @param userId ID người dùng
+     */
+    void logout(Long userId);
+
+    /**
+     * Thay đổi mật khẩu
+     *
+     * @param userId
+     * @param passwordDTO
+     */
+    void changePassword(Long userId, PasswordDTO passwordDTO);
+
+}

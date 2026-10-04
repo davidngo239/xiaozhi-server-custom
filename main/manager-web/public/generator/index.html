@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./favicon.ico">
+    <title>Tùy chỉnh Xiaozhi AI</title>
+    <script>
+      const language = localStorage.getItem('userLanguage') || 'vi';
+      const generatorLanguage = language.replace('_', '-');
+      localStorage.setItem('user-language', ['vi', 'en', 'zh-CN', 'zh-TW', 'ja'].includes(generatorLanguage) ? generatorLanguage : 'vi');
+    </script>
+    <script type="module" crossorigin src="./assets/index-Guo1hQ-y.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B3ns2K1c.css">
+  </head>
+  <body>
+    <div id="app"></div>
+
+  </body>
+</html>

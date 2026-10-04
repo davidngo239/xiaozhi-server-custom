@@ -1,0 +1,309 @@
+<template>
+  <div class="custom-table-wrapper">
+    <div class="table-container" :style="{ height: tableContainerHeight }">
+      <el-table
+        ref="tableRef"
+        :data="data"
+        :class="['custom-table', tableClass]"
+        height="100%"
+        v-loading="loading"
+        :element-loading-text="loadingText"
+        :element-loading-spinner="loadingSpinner"
+        :element-loading-background="loadingBackground"
+        :header-cell-class-name="headerCellClassName"
+        :row-class-name="rowClassName"
+        @selection-change="handleSelectionChange"
+        @row-click="handleRowClick"
+      >
+        <!-- Chọn cột -->
+        <el-table-column
+          v-if="showSelection"
+          width="55"
+          align="center"
+          label="Chọn"
+        >
+          <template slot-scope="scope">
+            <slot
+              v-if="$scopedSlots.selection"
+              name="selection"
+              :row="scope.row"
+              :$index="scope.$index"
+            />
+            <el-checkbox
+              v-else
+              :value="scope.row.selected"
+              @change="handleCheckboxChange(scope.row)"
+            />
+          </template>
+        </el-table-column>
+
+        <!-- Cột động -->
+        <el-table-column
+          v-for="column in columns"
+          :key="column.prop"
+          :prop="column.prop"
+          :label="column.label"
+          :width="column.width"
+          :min-width="column.minWidth"
+          :align="column.align || 'center'"
+          :show-overflow-tooltip="column.showOverflowTooltip !== false"
+        >
+          <template slot-scope="scope">
+            <!-- Vị trí tùy chỉnh: Ưu tiên sử dụng tên vị trí được chỉ định bởi cột.slot, nếu không, cột.prop được sử dụng làm tên vị trí -->
+            <slot
+              v-if="$scopedSlots[column.slot] || $scopedSlots[column.prop]"
+              :name="column.slot || column.prop"
+              :row="scope.row"
+              :$index="scope.$index"
+              :column="column"
+            />
+            <!-- Hiển thị theo mặc định -->
+            <template v-else>
+              {{ column.systemText ? $systemText(scope.row[column.prop]) : scope.row[column.prop] }}
+            </template>
+          </template>
+        </el-table-column>
+
+        <!-- Cột thao tác -->
+        <el-table-column
+          v-if="showOperations"
+          :label="operationsLabel"
+          align="center"
+          :width="operationsWidth"
+        >
+          <template slot-scope="scope">
+            <slot name="operations" :row="scope.row" :$index="scope.$index" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="table-footer">
+      <slot name="footer-btns"></slot>
+      <CustomPagination
+        v-if="showPagination"
+        :total="total"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-size-options="pageSizeOptions"
+        @size-change="handleSizeChange"
+        @page-change="handlePageChange"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import CustomPagination from './CustomPagination.vue';
+
+export default {
+  name: 'CustomTable',
+  components: {
+    CustomPagination
+  },
+  props: {
+    // dữ liệu dạng bảng
+    data: {
+      type: Array,
+      default: () => []
+    },
+    // cấu hình cột
+    columns: {
+      type: Array,
+      default: () => []
+    },
+    // Có hiển thị hộp lựa chọn hay không
+    showSelection: {
+      type: Boolean,
+      default: false
+    },
+    // Có hiển thị cột thao tác hay không
+    showOperations: {
+      type: Boolean,
+      default: false
+    },
+    operationsLabel: {
+      type: String,
+      default: 'Thao tác'
+    },
+    operationsWidth: {
+      type: [String, Number],
+      default: 180
+    },
+    // Liên quan đến phân trang
+    showPagination: {
+      type: Boolean,
+      default: true
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
+    currentPage: {
+      type: Number,
+      default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 10
+    },
+    pageSizeOptions: {
+      type: Array,
+      default: () => [10, 20, 50, 100]
+    },
+    // Trạng thái tải
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    loadingText: {
+      type: String,
+      default: 'Loading'
+    },
+    loadingSpinner: {
+      type: String,
+      default: 'el-icon-loading'
+    },
+    loadingBackground: {
+      type: String,
+      default: 'rgba(255, 255, 255, 0.7)'
+    },
+    // Tên lớp tùy chỉnh
+    tableClass: {
+      type: String,
+      default: ''
+    },
+    headerCellClassName: {
+      type: String,
+      default: ''
+    },
+    rowClassName: {
+      type: [String, Function],
+      default: ''
+    },
+  },
+  computed: {
+    tableContainerHeight() {
+      return this.showPagination ? 'calc(100% - 48px)' : '100%';
+    }
+  },
+  methods: {
+    // Thay đổi hộp kiểm
+    handleCheckboxChange(row) {
+      this.$set(row, 'selected', !row.selected);
+    },
+    // Sự kiện phân trang
+    handleSizeChange(val) {
+      this.$emit('size-change', val);
+    },
+    handlePageChange(page) {
+      this.$emit('page-change', page);
+    },
+    // Chọn sự kiện
+    handleSelectionChange(selection) {
+      this.$emit('selection-change', selection);
+    },
+    // sự kiện bấm hàng
+    handleRowClick(row, column, event) {
+      this.$emit('row-click', row, column, event);
+    },
+    // Xóa lựa chọn
+    clearSelection() {
+      this.$refs.tableRef && this.$refs.tableRef.clearSelection();
+    },
+    // Chuyển đổi lựa chọn
+    toggleRowSelection(row, selected) {
+      this.$refs.tableRef && this.$refs.tableRef.toggleRowSelection(row, selected);
+    }
+  }
+};
+</script>
+
+<style scoped lang="scss">
+.custom-table-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  .table-container {
+    width: 100%;
+    box-shadow: 0 2px 12px rgba(74, 124, 253, 0.12);
+    border-radius: 6px;
+    .custom-table {
+      width: 100%;
+      border: 1px solid #eef3fd;
+      border-bottom: none;
+      border-radius: 6px;
+      .el-table__body-wrapper {
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #a1c9fd;
+          border-radius: 3px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #f0f3fe;
+          border-radius: 3px;
+        }
+      }
+      .el-table__header {
+        th {
+          color: #342f45;
+          background: #edf2fc !important;
+        }
+      }
+    }
+  }
+}
+:deep(.el-table) {
+  .el-table__body-wrapper {
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #a1c9fd;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f0f3fe;
+      border-radius: 3px;
+    }
+  }
+  .el-table__header {
+    th {
+      color: #342f45;
+      background: #edf2fc !important;
+    }
+  }
+}
+.table-footer {
+  padding: 16px 0px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:deep(.el-loading-mask) {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(2px);
+}
+
+:deep(.el-loading-spinner .circular) {
+  width: 28px;
+  height: 28px;
+}
+
+:deep(.el-loading-spinner .path) {
+  stroke: #6b8cff;
+}
+
+:deep(.el-loading-text) {
+  color: #6b8cff !important;
+  font-size: 14px;
+  margin-top: 8px;
+}
+</style>

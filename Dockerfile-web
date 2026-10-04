@@ -1,0 +1,50 @@
+# Giai đoạn 1: Xây dựng giao diện người dùng Vue
+FROM node:18 AS web-builder
+WORKDIR /app
+COPY main/manager-web/package*.json ./
+RUN npm install
+COPY main/manager-web .
+RUN npm run build
+
+# Giai đoạn 2: Xây dựng phần phụ trợ Java
+FROM maven:3.9.4-eclipse-temurin-21 AS api-builder
+WORKDIR /app
+COPY main/manager-api/pom.xml .
+COPY main/manager-api/src ./src
+RUN mvn clean package -Dmaven.test.skip=true
+
+# Giai đoạn 3: Xây dựng hình ảnh cuối cùng
+FROM bellsoft/liberica-runtime-container:jre-21-glibc
+
+# Cài đặt Nginx và thư viện phông chữ
+RUN apk update && \
+    apk add --no-cache --no-scripts \
+        nginx \
+        bash \
+        fontconfig \
+        ttf-dejavu \
+    && rm -rf /var/cache/apk/* \
+    && mkdir -p /run/nginx /var/log/nginx /var/tmp/nginx /etc/nginx/conf.d
+
+# Copy font tiếng Trung đi kèm dự án
+COPY main/manager-web/public/generator/static/fonts/*.ttf /usr/share/fonts/
+
+# Cập nhật bộ đệm phông chữ
+RUN fc-cache -f -v
+
+# Định cấu hình Nginx
+COPY docs/docker/nginx.conf /etc/nginx/nginx.conf
+
+# Sao chép sản phẩm xây dựng front-end
+COPY --from=web-builder /app/dist /usr/share/nginx/html
+
+# Sao chép gói JAR phụ trợ Java
+COPY --from=api-builder /app/target/xiaozhi-esp32-api.jar /app/xiaozhi-esp32-api.jar
+
+# cổng tiếp xúc
+EXPOSE 8002
+
+# kịch bản khởi động
+COPY docs/docker/start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]

@@ -1,0 +1,77 @@
+/* stylelint-disable comment-empty-line-before */
+/**
+ * Dưới đây là các biến kiểu thường được sử dụng được tích hợp trong uni-app
+ *
+ * Nhiều plugin của bên thứ ba trên thị trường plug-in và tiện ích mở rộng chính thức của ứng dụng uni-app (https://ext.dcloud.net.cn) sử dụng các biến kiểu này
+ * Nếu bạn là nhà phát triển trình cắm, bạn nên sử dụng tính năng tiền xử lý scss và sử dụng các biến này trực tiếp trong mã trình cắm (không cần nhập tệp này) để người dùng có thể phát triển ứng dụng với phong cách tổng thể nhất quán bằng cách xây dựng các khối xây dựng.
+ *
+ */
+
+/**
+ * Nếu bạn là Nhà phát triển ứng dụng (người dùng trình cắm), bạn có thể tùy chỉnh chủ đề trình cắm của riêng mình bằng cách sửa đổi các biến này để đạt được các chức năng chủ đề tùy chỉnh.
+ *
+ * Nếu dự án của bạn cũng sử dụng tiền xử lý scss, bạn cũng có thể sử dụng trực tiếp các biến sau trong mã scss của mình mà không cần nhập tệp này.
+ */
+
+/* biến màu */
+
+/* màu sắc liên quan đến hành vi */
+$uni-color-primary: #007aff;
+$uni-color-success: #4cd964;
+$uni-color-warning: #f0ad4e;
+$uni-color-error: #dd524d;
+
+/* Màu văn bản cơ bản */
+$uni-text-color: #333; // màu cơ bản
+$uni-text-color-inverse: #fff; // màu đảo ngược
+$uni-text-color-grey: #999; // Màu xám phụ trợ, chẳng hạn như tải thêm thông tin nhanh chóng
+$uni-text-color-placeholder: #808080;
+$uni-text-color-disable: #c0c0c0;
+
+/* màu nền */
+$uni-bg-color: #fff;
+$uni-bg-color-grey: #f8f8f8;
+$uni-bg-color-hover: #f1f1f1; // Nhấp vào màu trạng thái
+$uni-bg-color-mask: rgb(0 0 0 / 40%); // Màu mặt nạ
+
+/* màu viền */
+$uni-border-color: #c8c7cc;
+
+/* biến kích thước */
+
+/* kích thước văn bản */
+$uni-font-size-sm: 12px;
+$uni-font-size-base: 14px;
+$uni-font-size-lg: 16;
+
+/* Kích thước hình ảnh */
+$uni-img-size-sm: 20px;
+$uni-img-size-base: 26px;
+$uni-img-size-lg: 40px;
+
+/* Border Radius */
+$uni-border-radius-sm: 2px;
+$uni-border-radius-base: 3px;
+$uni-border-radius-lg: 6px;
+$uni-border-radius-circle: 50%;
+
+/* khoảng cách ngang */
+$uni-spacing-row-sm: 5px;
+$uni-spacing-row-base: 10px;
+$uni-spacing-row-lg: 15px;
+
+/* khoảng cách dọc */
+$uni-spacing-col-sm: 4px;
+$uni-spacing-col-base: 8px;
+$uni-spacing-col-lg: 12px;
+
+/* Minh bạch */
+$uni-opacity-disabled: 0.3; // Tính minh bạch của trạng thái vô hiệu hóa thành phần
+
+/* Cảnh bài viết liên quan */
+$uni-color-title: #2c405a; // Màu tiêu đề bài viết
+$uni-font-size-title: 20px;
+$uni-color-subtitle: #555; // Màu tiêu đề phụ
+$uni-font-size-subtitle: 18px;
+$uni-color-paragraph: #3f536e; // Màu đoạn bài viết
+$uni-font-size-paragraph: 15px;

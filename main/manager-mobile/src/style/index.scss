@@ -1,0 +1,19 @@
+// Iconfont để thử nghiệm, có thể có hiệu lực
+// @import './iconfont.css';
+
+.test {
+  // Phong cách tổng thể có thể được gói gọn thông qua @apply nhiều phong cách
+  @apply mt-4 ml-4;
+
+  padding-top: 4px;
+  color: red;
+}
+
+:root,
+page {
+  // Sửa đổi theo màu chủ đề
+  // --wot-color-theme: #37c2bc;
+
+  // Sửa đổi màu nền của nút
+  // --wot-button-primary-bg-color: green;
+}

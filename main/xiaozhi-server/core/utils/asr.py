@@ -1,0 +1,27 @@
+import importlib
+import logging
+import os
+import sys
+import time
+import wave
+import uuid
+from abc import ABC, abstractmethod
+from typing import Optional, Tuple, List
+from core.providers.asr.base import ASRProviderBase
+from config.logger import setup_logging
+
+TAG = __name__
+logger = setup_logging()
+
+
+def create_instance(class_name: str, *args, **kwargs) -> ASRProviderBase:
+    """工厂方法创建ASR实例"""
+    if os.path.exists(os.path.join("core", "providers", "asr", f"{class_name}.py")):
+        lib_name = f"core.providers.asr.{class_name}"
+        if lib_name not in sys.modules:
+            sys.modules[lib_name] = importlib.import_module(f"{lib_name}")
+        return sys.modules[lib_name].ASRProvider(*args, **kwargs)
+
+    raise ValueError(
+        f"Loại ASR không được hỗ trợ: {class_name}. Vui lòng kiểm tra trường type trong cấu hình"
+    )

@@ -1,0 +1,22 @@
+# Máy chủ cài đặt Docker
+
+version: '3'
+services:
+  xiaozhi-esp32-server:
+    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest
+    container_name: xiaozhi-esp32-server
+    restart: always
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - TZ=UTC
+    ports:
+      # máy chủ ws
+      - "8000:8000"
+      # Cổng của dịch vụ http, được sử dụng cho giao diện OTA đơn giản (triển khai dịch vụ đơn lẻ) và giao diện phân tích trực quan
+      - "8003:8003"
+    volumes:
+      # Thư mục tập tin cấu hình
+      - ./data:/opt/xiaozhi-esp32-server/data
+      # Việc gắn file mô hình là rất quan trọng
+      - ./models/SenseVoiceSmall/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt

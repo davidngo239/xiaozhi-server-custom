@@ -1,0 +1,7 @@
+# Hình ảnh sản xuất, chỉ chứa mã ứng dụng
+FROM ghcr.io/xinnan-tech/xiaozhi-esp32-server:server-base
+
+COPY main/xiaozhi-server .
+
+# Bắt đầu ứng dụng
+CMD ["python", "app.py"]
